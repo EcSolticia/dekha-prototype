@@ -1,9 +1,13 @@
 #include <iostream>
 #include <array>
 #include "screen.h"
+#include "node/node.h"
 
 int main() {
-    Screen<500, 500> main_screen(0, 0);
+    Node n1;
+    
+
+    /*Screen<500, 500> main_screen(0, 0);
 
     try {
 
@@ -17,7 +21,7 @@ int main() {
         if (e == -1) {
             std::cerr << "Returning from main due to out of range error" << std::endl;
         }
-    }
+    }*/
 
     return 0;
 }
