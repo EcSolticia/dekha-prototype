@@ -38,3 +38,5 @@ build/*
 .vscode/*
 
 src/main
+
+bar.sh

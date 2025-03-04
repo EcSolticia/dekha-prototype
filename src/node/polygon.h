@@ -1,6 +1,5 @@
 #pragma once
 #include "node.h"
-#include "../common/types.h"
 #include <vector>
 
 class Polygon : public Node {

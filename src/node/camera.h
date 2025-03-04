@@ -4,13 +4,17 @@
 #include <vector>
 
 class Camera : public Node {
-    float FOV;
+    double focal_length;
+    double fov;
     std::vector<Node*> channel;
     void* screen_ptr;
 
 public:
-    void set_FOV(const float FOV);
-    float get_FOV() const;
+    void set_fov(const double fov);
+    double get_fov() const;
+
+    void set_focal_length(const double focal_length);
+    double get_focal_length() const;
 
     void set_channel(const std::vector<Node*> channel);
     std::vector<Node*> get_channel() const;

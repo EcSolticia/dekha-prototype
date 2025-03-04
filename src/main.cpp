@@ -5,30 +5,23 @@
 #include "node/camera.h"
 
 int main() {
-    Polygon n1("Triangle");
-    Camera c1("Cam");
-    std::vector<Node*> chnl;
-    chnl.push_back(&n1);
-    c1.set_channel(chnl);
-    Screen<500, 500> sc(0, 0);
-    c1.set_screen(&sc);
-
-
-    /*Screen<500, 500> main_screen(0, 0);
+    Screen<10, 10> sc(0, 0);
+    Vec2f A = {0, 0};
+    Vec2f B = {5, 0};
+    Vec2f C = {5, 0};
 
     try {
-
-        for (int i = 0; i < 500; ++i) {
-            for (int j = 0; j > -500; --j) {
-                main_screen.set_pixel(i, j, (i - j));
-            }
-        }
-
+        sc.draw_line(A, B);
+        sc.draw_line(B, C);
     } catch (int e) {
         if (e == -1) {
-            std::cerr << "Returning from main due to out of range error" << std::endl;
+            std::cout << "Caught error index out of range, gracefully quitting program" << std::endl;
+            return 0;
         }
-    }*/
+    }
+    sc.output_display();
+
+    std::cout << "Program executed without errors" << std::endl;
 
     return 0;
 }

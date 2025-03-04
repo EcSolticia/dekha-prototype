@@ -1,11 +1,18 @@
 #include "camera.h"
 
-void Camera::set_FOV(const float FOV) {
-    this->FOV = FOV;
+void Camera::set_fov(const double fov) {
+    this->fov = fov;
+}
+double Camera::get_fov() const {
+    return this->fov;
 }
 
-float Camera::get_FOV() const {
-    return this->FOV;
+void Camera::set_focal_length(const double focal_length) {
+    this->focal_length = focal_length;
+}
+
+double Camera::get_focal_length() const {
+    return this->focal_length;
 }
 
 void Camera::set_channel(const std::vector<Node*> channel) {
@@ -26,10 +33,10 @@ void* Camera::get_screen() const {
 
 Camera::Camera(const std::string name) {
     this->set_name(name);
-    this->FOV = 10;
-    std::cout << "Camera node of name " << this->get_name() << " constructed with FOV = " << 10 << std::endl;
+    this->focal_length = 10;
+    std::cout << "Camera node of name " << this->get_name() << " constructed with focal_length = " << 10 << std::endl;
 }
 
 Camera::~Camera() {
-    std::cout << "Camera node of name " << this->get_name() << " with FOV = " << FOV << " desctructed" << std::endl;
+    std::cout << "Camera node of name " << this->get_name() << " with focal_length = " << focal_length << " desctructed" << std::endl;
 }
