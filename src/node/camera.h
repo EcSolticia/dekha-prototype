@@ -18,6 +18,6 @@ public:
     void set_screen(void* screen_ptr);
     void* get_screen() const;
 
-    Camera();
+    Camera(const std::string name="Non-name");
     ~Camera() override;
 };

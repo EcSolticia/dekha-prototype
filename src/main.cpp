@@ -5,8 +5,8 @@
 #include "node/camera.h"
 
 int main() {
-    Polygon n1;
-    Camera c1;
+    Polygon n1("Triangle");
+    Camera c1("Cam");
     std::vector<Node*> chnl;
     chnl.push_back(&n1);
     c1.set_channel(chnl);

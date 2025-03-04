@@ -9,6 +9,6 @@ class Polygon : public Node {
 public:
     void add_triangle(const Vec3f A, const Vec3f B, const Vec3f C);
 
-    Polygon();
+    Polygon(const std::string name="Non-name");
     ~Polygon() override;
 };
