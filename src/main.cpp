@@ -2,9 +2,17 @@
 #include <array>
 #include "screen.h"
 #include "node/polygon.h"
+#include "node/camera.h"
 
 int main() {
     Polygon n1;
+    Camera c1;
+    std::vector<Node*> chnl;
+    chnl.push_back(&n1);
+    c1.set_channel(chnl);
+    Screen<500, 500> sc(0, 0);
+    c1.set_screen(&sc);
+
 
     /*Screen<500, 500> main_screen(0, 0);
 
