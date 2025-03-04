@@ -1,11 +1,10 @@
 #include <iostream>
 #include <array>
 #include "screen.h"
-#include "node/node.h"
+#include "node/polygon.h"
 
 int main() {
-    Node n1;
-    
+    Polygon n1;
 
     /*Screen<500, 500> main_screen(0, 0);
 
