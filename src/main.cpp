@@ -5,26 +5,34 @@
 #include "node/camera.h"
 
 int main() {
-    Camera cam("Cam");
-    cam.set_focal_length(0.5);
-    Polygon Tri("Triangle");
-    cam.add_to_channel(&Tri);
     
-    Vec3f A = {0, 0, 1};
-    Vec3f B = {0, 1, 1};
-    Vec3f C = {1, 0, 1};
-    Tri.add_triangle(A, B, C);
-
-    Screen<10, 10> sc(0, 0);
-    cam.set_screen(&sc);    
+    Screen<10, 10> main_screen(5, 5);
+    Camera cam;
+    main_screen.set_cam(&cam);
+    Vec2f d = {2, 2};
+    cam.set_dimensions(d);
 
     try {
-        Vec2f a = {0, 0};
-        Vec2f b = {9, -9};
-        Vec2f c = {9, 0};
-        sc.draw_line(a, b);
-        sc.draw_line(b, c);
-        sc.draw_line(c, a);
+        std::cout << "\n";
+        std::cout << "Vertices with different z values will appear identical:\n";
+        for (size_t i = 0; i < 10; ++i) {
+            Vec3f X = {0, 0, (double)(i + 1)};
+            Vec2f Y = main_screen.map_vertex_to_screen(X);
+        }
+        std::cout << "\n";
+        std::cout << "Vertices with identical angles w.r.t. the camera origin appear on the same pixel\n";
+        for (size_t i = 0; i < 10; ++i) {
+            Vec3f X = {(double)(i + 1), 0, (double)(i + 1)};
+            Vec2f Y = main_screen.map_vertex_to_screen(X);
+        }
+        std::cout << "\n";
+        std::cout << "Upward scaling is twice" << std::endl;
+        for (size_t i = 0; i < 10; ++i) {
+            Vec3f X = {0, (double)(i + 1), (double)(i + 1)};
+            Vec2f Y = main_screen.map_vertex_to_screen(X);
+        }
+
+
     } catch (int e) {
         if (e == -1) {
             std::cout << "Caught error index out of range.\n";
@@ -34,7 +42,6 @@ int main() {
             return 0;
         }
     }
-    sc.output_display();
 
     std::cout << "Program executed without errors" << std::endl;
 

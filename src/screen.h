@@ -5,9 +5,13 @@
 #include <string>
 #include <array>
 #include "common/types.h"
+#include "node/camera.h"
 
 template <size_t height, size_t width> class Screen {
     private:
+        // It's easier to connect the camera to the screen than the other way around
+        Camera* cam = nullptr;
+    
         std::array<size_t, height * width> data;
         size_t origin_x;
         size_t origin_y;
@@ -17,10 +21,12 @@ template <size_t height, size_t width> class Screen {
         }
     
         size_t get_idx_from_cartesian(const int x, const int y) {
+            bool valid1 = (x + origin_x >= 0 and y + origin_y >= 0);
             size_t rel_x = x + origin_x;
             size_t rel_y = origin_y - y;
     
-            if (rel_x >= width or rel_y >= height) {
+            bool valid2 = (rel_x < width or rel_y < height);
+            if (!(valid1 and valid2)) {
                 std::cerr << "Coordinates (" << x << ", " << y << ") out of range" << std::endl;
                 throw -1;
             }
@@ -41,6 +47,53 @@ template <size_t height, size_t width> class Screen {
         }
         
     public:
+        Vec2f map_vertex_to_screen(Vec3f vertex_position) {
+            // position on screen
+            Vec2f PoS;
+        
+            if (vertex_position[2] == 0) {
+                std::cout << "Error in mapping vertex to screen:\n";
+                std::cout << "Division by zero" << std::endl;
+                throw -2;
+            }
+        
+            Vec2f cam_dim = (this->get_cam())->get_dimensions();
+            PoS[0] = (vertex_position[0] * width)/(vertex_position[2] * cam_dim[0]);
+            PoS[1] = (vertex_position[1] * height)/(vertex_position[2] * cam_dim[1]);
+        
+            cout_vecf<3, false>("Mapped", vertex_position, " to");    
+            cout_vecf<2, true>("", PoS, "");
+
+            return PoS;
+        }
+        void draw_vertex(Vec3f vertex_position) {
+            Vec2f PoS = this->map_vertex_to_screen(vertex_position);
+        
+            int x = (int) PoS[0];
+            int y = (int) PoS[1];
+        
+            this->set_pixel(x, y, 1);
+        }
+
+        Camera* get_cam() const {
+            if (this->cam == nullptr) {
+                std::cout << "Screen camera not yet set" << std::endl;
+                throw -2;
+            }
+            return this->cam;
+        }
+        void set_cam(Camera* cam) {
+            std::cout << "Setting screen camera to " << cam << std::endl;
+            this->cam = cam;
+        }
+
+        Vec2f get_pixel_dimensions() {
+            Vec2f C;
+            C[0] = width;
+            C[1] = height;
+            return C;
+        }
+
         void set_pixel(int x, int y, int val) {
             data[get_idx_from_cartesian(x, y)] = val;
             std::cout << "Set pixel (" << x << ", " << y << ") to value " << val << std::endl;
@@ -48,16 +101,16 @@ template <size_t height, size_t width> class Screen {
     
         void draw_line(Vec2f A, Vec2f B) {
             Vec2f diff = subtract(B, A);
-            cout_vecf("Calculated diff as ", diff, "");
+            cout_vecf<2, true>("Calculated diff as ", diff, "");
             double l = length(diff);
             std::cout << "Calculated length as " << l << "\n";
             Vec2f unit_diff = divide(diff, l);
-            cout_vecf("Calculated unit_diff as ", unit_diff, "");
+            cout_vecf<2, true>("Calculated unit_diff as ", unit_diff, "");
             size_t lui = (size_t) l;
             std::cout << "Calculated lui as " << lui << "\n";
             for (size_t i = 0; i < lui; ++i) {
                 Vec2f Apda = add(A, multiply(unit_diff, i));
-                cout_vecf("Calculated Apda", Apda, "");
+                cout_vecf<2, true>("Calculated Apda", Apda, "");
                 
                 int x = (int) Apda[0];
                 int y = (int) Apda[1];
@@ -113,4 +166,4 @@ template <size_t height, size_t width> class Screen {
         ~Screen() {
             std::cout << "Screen desctructed" << std::endl;
         }
-    };
+};

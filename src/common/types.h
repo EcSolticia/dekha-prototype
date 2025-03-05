@@ -8,12 +8,15 @@ typedef std::array<int, 2> Vec2;
 typedef std::array<double, 2> Vec2f;
 typedef std::array<double, 3> Vec3f;
 
-template<size_t N> void cout_vecf(const std::string prepend, std::array<double, N> A, const std::string append) {
+template<size_t N, bool flush> void cout_vecf(const std::string prepend, std::array<double, N> A, const std::string append) {
     std::cout << prepend << " (";
     for (size_t i = 0; i < N - 1; ++i) {
         std::cout << A[i] << ", ";
     }
-    std::cout << A[N - 1] << ")" << append << std::endl;
+    std::cout << A[N - 1] << ")" << append;
+    if (flush) {
+        std::cout << std::endl;
+    }
 }
 
 template<size_t N> std::array<double, N> invert(std::array<double, N> A) {

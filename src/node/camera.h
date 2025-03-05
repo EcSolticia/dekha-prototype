@@ -6,13 +6,17 @@
 
 class Camera : public Node {
     double focal_length;
-    double fov;
     std::vector<Node*> channel;
-    void* screen_ptr = nullptr;
+
+    Vec2f dimensions;
+
+private:
+    Vec2f get_position_on_screen(Vec3f vertex_position);
 
 public:
-    void set_fov(const double fov);
-    double get_fov() const;
+
+    void set_dimensions(Vec2f dimensions);
+    Vec2f get_dimensions();
 
     void set_focal_length(const double focal_length);
     double get_focal_length() const;
@@ -20,11 +24,6 @@ public:
     void add_to_channel(Node* node);
     void set_channel(const std::vector<Node*> channel);
     std::vector<Node*> get_channel() const;
-
-    void set_screen(void* screen_ptr);
-    void* get_screen() const;
-
-    void render_polygon(Polygon* node);
 
     Camera(const std::string name="Non-name");
     ~Camera() override;
