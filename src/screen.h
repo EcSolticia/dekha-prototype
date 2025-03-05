@@ -92,10 +92,11 @@ template <size_t height, size_t width> class Screen {
                 std::cout << "Passed Polygon node doesn't contain sufficient data points" << std::endl;
                 throw -2;
             }
-            //draw_3dline(data[l], data[0]);
+            
             for (size_t i = 0; i < l - 1; ++i) {
-                draw_3dline(data[i], data[i + 1]);
+                this->draw_3dline(data[i], data[i + 1]);
             }
+            this->draw_3dline(data[l - 1], data[0]);
         }
 
         Camera* get_cam() const {
