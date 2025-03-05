@@ -48,16 +48,16 @@ template <size_t height, size_t width> class Screen {
     
         void draw_line(Vec2f A, Vec2f B) {
             Vec2f diff = subtract(B, A);
-            cout_Vec2f("Calculated diff as ", diff, "");
+            cout_vecf("Calculated diff as ", diff, "");
             double l = length(diff);
             std::cout << "Calculated length as " << l << "\n";
             Vec2f unit_diff = divide(diff, l);
-            cout_Vec2f("Calculated unit_diff as ", unit_diff, "");
+            cout_vecf("Calculated unit_diff as ", unit_diff, "");
             size_t lui = (size_t) l;
             std::cout << "Calculated lui as " << lui << "\n";
             for (size_t i = 0; i < lui; ++i) {
                 Vec2f Apda = add(A, multiply(unit_diff, i));
-                cout_Vec2f("Calculated Apda", Apda, "");
+                cout_vecf("Calculated Apda", Apda, "");
                 
                 int x = (int) Apda[0];
                 int y = (int) Apda[1];
