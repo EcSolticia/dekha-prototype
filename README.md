@@ -7,7 +7,7 @@ The output is represented in the terminal as ASCII graphics.
 
 # Example
 ## Input:
-  - The camera faces the z-axis in the position direction by default (represented by the rotation vector (0, 0, 0) within the program for convenience).
+  - The camera faces the z-axis in the positive direction by default (represented by the rotation vector (0, 0, 0) within the program for convenience).
   - A triangle with the following vertices is initialized:
     ```
     (0, 0, 1),
