@@ -52,6 +52,7 @@ template <size_t height, size_t width> class Screen {
             Vec2f PoS;
         
             if (vertex_position[2] == 0) {
+                cout_vecf<3, true>("\nVertex position", vertex_position, "");
                 std::cout << "Error in mapping vertex to screen:\n";
                 std::cout << "Division by zero" << std::endl;
                 throw -2;
@@ -73,6 +74,28 @@ template <size_t height, size_t width> class Screen {
             int y = (int) PoS[1];
         
             this->set_pixel(x, y, 1);
+        }
+        void draw_3dline(Vec3f from, Vec3f to) {
+            if (from == to) {
+                return;
+            }
+            Vec2f A = this->map_vertex_to_screen(from);
+            Vec2f B = this->map_vertex_to_screen(to);
+
+            draw_line(A, B);
+        }
+        void draw_polygon(Polygon* polygon_node) {
+            std::vector<Vec3f> data = polygon_node->get_data();
+
+            size_t l = data.size();
+            if (l < 3) {
+                std::cout << "Passed Polygon node doesn't contain sufficient data points" << std::endl;
+                throw -2;
+            }
+            //draw_3dline(data[l], data[0]);
+            for (size_t i = 0; i < l - 1; ++i) {
+                draw_3dline(data[i], data[i + 1]);
+            }
         }
 
         Camera* get_cam() const {

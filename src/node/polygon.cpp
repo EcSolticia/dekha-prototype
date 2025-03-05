@@ -15,10 +15,12 @@ std::vector<Vec3f> Polygon::get_data() {
 
 Polygon::Polygon(const std::string name) {
     this->set_name(name);
-    data.resize(3);
-    data[0] = {0, 0, 0};
-    data[1] = {1, 0, 0};
-    data[2] = {0, 1, 0};
+    data.resize(5);
+    data[0] = {0, 0, 1};
+    data[1] = {10, 0, 4};
+    data[2] = {0, 10, 1};
+    data[3] = {0, 0, 1};
+    data[4] = {0, 0, 1};
     std::cout << "Polygon of name " << this->get_name() << " initialized as a basic triangle" << std::endl;
 }
 
