@@ -42,10 +42,9 @@ template <size_t height, size_t width> class Screen {
             bool valid2 = (a < width and b < height);
 
             // the actual "check"
-            // throw an out_of_range error if either of the relative coordinates is out of bounds
+            // an out_of_range error if either of the relative coordinates is out of bounds
             if (!(valid1 and valid2)) {
                 std::string msg = "Coordinates (" + std::to_string(x) + ", " + std::to_string(y) + ") out of range.";
-                std::cerr << msg << std::endl;
                 throw std::out_of_range(msg);
             }
     
@@ -55,7 +54,6 @@ template <size_t height, size_t width> class Screen {
         Vec2f get_cartesian_from_idx(size_t idx) {
             if (idx >= height * width) {
                 std::string msg = "Index " + std::to_string(idx) + " out of range";
-                std::cerr << msg << std::endl;
                 throw std::out_of_range(msg);
             }
     
@@ -80,7 +78,6 @@ template <size_t height, size_t width> class Screen {
             if (vertex_position[2] == 0) {
                 cout_vecf<3, true>("\nVertex position", vertex_position, "");
                 std::string msg = "Error in mapping vertex to screen: division by zero";
-                std::cout << msg << std::endl;
                 throw std::domain_error(msg);
             }
         
@@ -116,7 +113,6 @@ template <size_t height, size_t width> class Screen {
             size_t l = data.size();
             if (l < 3) {
                 std::string msg = "Passed Polygon node doesn't contain sufficient number of data points!";
-                std::cout << msg << std::endl;
                 throw std::runtime_error(msg);
             }
             
@@ -129,7 +125,6 @@ template <size_t height, size_t width> class Screen {
         Camera* get_cam() const {
             if (this->cam == nullptr) {
                 std::string msg = "Screen camera not yet set";
-                std::cout << msg << std::endl;
                 throw std::runtime_error(msg);
             }
             return this->cam;

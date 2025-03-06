@@ -49,7 +49,6 @@ template<size_t N> std::array<double, N> multiply(std::array<double, N> B, doubl
 template<size_t N> std::array<double, N> divide(std::array<double, N> B, double a) {
     if (a == 0) {
         std::string msg = "Division by zero!";
-        std::cout << msg << std::endl;
         throw std::domain_error(msg);
     }
     std::array<double, N> C;
