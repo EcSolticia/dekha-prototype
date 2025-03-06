@@ -18,6 +18,12 @@ template <size_t height, size_t width> class Screen {
 
         size_t get_idx_from_relcartesian(const size_t x, const size_t y) {
             return y * width + x;
+            /*
+            Each increment of `y` corresponds to one additional factor of `width` being added
+            to the index.
+            The value of `x` directly adds to the index.
+            Therefore, index is `y * width + x`.
+            */
         }
     
         size_t get_idx_from_cartesian(const int x, const int y) {
@@ -53,6 +59,12 @@ template <size_t height, size_t width> class Screen {
                 throw std::out_of_range(msg);
             }
     
+            /*
+            index = y * width + x;
+            Thus, index % width = 0 + x % width = x.
+            As well as index/width = y + x/width. Thus, the floor is y.
+            */
+
             size_t rel_x = idx % width;
             size_t rel_y = floor(idx/width);
     
