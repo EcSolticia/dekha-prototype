@@ -21,22 +21,36 @@ template <size_t height, size_t width> class Screen {
         }
     
         size_t get_idx_from_cartesian(const int x, const int y) {
-            bool valid1 = (x + origin_x >= 0 and y + origin_y >= 0);
-            size_t rel_x = x + origin_x;
-            size_t rel_y = origin_y - y;
+            // calculate prospective relative coordinates
+            int a = x + (int)(origin_x);
+            int b = (int)(origin_y) - y;
+
+            // check if the prospectives are above the lower bounds
+            bool valid1 = (a >= 0 and b >= 0);
+            
+            // type conversions
+            size_t rel_x = (size_t)(a);
+            size_t rel_y = (size_t)(b);
     
-            bool valid2 = (rel_x < width or rel_y < height);
+            // check if the prospectives are below the upper bounds
+            bool valid2 = (a < width and b < height);
+
+            // the actual "check"
+            // throw an out_of_range error if either of the relative coordinates is out of bounds
             if (!(valid1 and valid2)) {
-                std::cerr << "Coordinates (" << x << ", " << y << ") out of range" << std::endl;
-                throw -1;
+                std::string msg = "Coordinates (" + std::to_string(x) + ", " + std::to_string(y) + ") out of range.";
+                std::cerr << msg << std::endl;
+                throw std::out_of_range(msg);
             }
     
+            // this block is executed iff the relative coordinates calculated are valid
             return get_idx_from_relcartesian(rel_x, rel_y);
         }
         Vec2f get_cartesian_from_idx(size_t idx) {
             if (idx >= height * width) {
-                std::cerr << "Index " << idx << " out of range" << std::endl;
-                throw -1;
+                std::string msg = "Index " + std::to_string(idx) + " out of range";
+                std::cerr << msg << std::endl;
+                throw std::out_of_range(msg);
             }
     
             size_t rel_x = idx % width;
@@ -53,9 +67,9 @@ template <size_t height, size_t width> class Screen {
         
             if (vertex_position[2] == 0) {
                 cout_vecf<3, true>("\nVertex position", vertex_position, "");
-                std::cout << "Error in mapping vertex to screen:\n";
-                std::cout << "Division by zero" << std::endl;
-                throw -2;
+                std::string msg = "Error in mapping vertex to screen: division by zero";
+                std::cout << msg << std::endl;
+                throw std::domain_error(msg);
             }
         
             Vec2f cam_dim = (this->get_cam())->get_dimensions();
@@ -89,8 +103,9 @@ template <size_t height, size_t width> class Screen {
 
             size_t l = data.size();
             if (l < 3) {
-                std::cout << "Passed Polygon node doesn't contain sufficient data points" << std::endl;
-                throw -2;
+                std::string msg = "Passed Polygon node doesn't contain sufficient number of data points!";
+                std::cout << msg << std::endl;
+                throw std::runtime_error(msg);
             }
             
             for (size_t i = 0; i < l - 1; ++i) {
@@ -101,8 +116,9 @@ template <size_t height, size_t width> class Screen {
 
         Camera* get_cam() const {
             if (this->cam == nullptr) {
-                std::cout << "Screen camera not yet set" << std::endl;
-                throw -2;
+                std::string msg = "Screen camera not yet set";
+                std::cout << msg << std::endl;
+                throw std::runtime_error(msg);
             }
             return this->cam;
         }
