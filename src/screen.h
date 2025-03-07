@@ -5,6 +5,7 @@
 #include <string>
 #include <array>
 #include "common/types.h"
+#include "common/math.h"
 #include "node/camera.h"
 
 template <size_t height, size_t width> class Screen {
@@ -107,19 +108,97 @@ template <size_t height, size_t width> class Screen {
 
             draw_line(A, B);
         }
+
+        void draw_triangle_face(std::vector<Vec3f> triangle_data) {
+            if (triangle_data.size() != 3)  {
+                std::string msg = "Passed argument isn't a triangle";
+                throw std::domain_error(msg);
+            }
+
+            Vec3f a = triangle_data[0];
+            Vec3f b = triangle_data[1];
+            Vec3f c = triangle_data[2];
+
+            Vec2f A = this->map_vertex_to_screen(a);
+            Vec2f B = this->map_vertex_to_screen(b);
+            Vec2f C = this->map_vertex_to_screen(c);
+
+            Vec2f P = subtract(B, A);
+            double lP = length(P);
+            Vec2f Q = subtract(C, A);
+            double lQ = length(Q);
+
+            // calculate bounding region
+            Vec2f top_left = {min(A[0], B[0], C[0]), max(A[1], B[1], C[1])};
+            Vec2f bottom_right = {max(A[0], B[0], C[9]), min(A[1], B[1], C[1])};
+
+            size_t i = bottom_right[1];
+            size_t l = top_left[1];
+            while (i < l) {
+                
+                size_t p = top_left[0];
+                size_t q = bottom_right[0];
+                while (p < q) {
+
+                    // check if (p, i) is in the triangle
+                    Vec2f X = {(double)(p - top_left[0]), (double)(i - bottom_right[1])};
+                    double l = length(X);
+                    double w_p = (X[0] * Q[1] - X[1] * Q[0])/(P[0] * Q[1] - P[1] * Q[0]);
+                    double w_q = (P[0] * X[1] - X[0] * P[1])/(P[0] * Q[1] - P[1] * Q[0]);
+
+                    if (w_p + w_q <= 1 and w_p >= 0 and w_q >= 0) {
+                        // fill pixel
+                        set_pixel(p, i, 1);
+                    } else {
+                        cout_vecf<2, true>("Pixel", X, " out of face");
+                    }
+
+                    ++p;
+                }
+
+                ++i;
+            }
+        }
+
         void draw_polygon(Polygon* polygon_node) {
             std::vector<Vec3f> data = polygon_node->get_data();
 
             size_t l = data.size();
             if (l < 3) {
                 std::string msg = "Passed Polygon node doesn't contain sufficient number of data points!";
-                throw std::runtime_error(msg);
+                throw std::domain_error(msg);
             }
             
+            // draw wireframe
             for (size_t i = 0; i < l - 1; ++i) {
                 this->draw_3dline(data[i], data[i + 1]);
             }
             this->draw_3dline(data[l - 1], data[0]);
+        }
+        void draw_polygonX(Polygon* polygon_node) {
+            std::vector <Vec3f> data = polygon_node->get_data();
+
+            size_t l = data.size();
+            if (l < 3) {
+                std::string msg = "Passed Polygon node doesn't contain sufficient number of data points!";
+                throw std::runtime_error(msg);
+            }
+
+            for (size_t i = 0; i < l; ++i) {
+                for (size_t j = i; j < l; ++j) {
+                    this->draw_3dline(data[i], data[j]);
+                }
+            }
+        }
+        void draw_polygon_with_faces(Polygon* polygon_node) {
+            std::vector <Vec3f> data = polygon_node->get_data();
+
+            size_t l = data.size();
+            if (l < 3) {
+                std::string msg = "Passed Polygon node doesn't contain sufficient number of data points!";
+                throw std::runtime_error(msg);
+            }
+
         }
 
         Camera* get_cam() const {

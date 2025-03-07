@@ -4,6 +4,8 @@
 #include "node/polygon.h"
 #include "node/camera.h"
 
+#include "common/meshgen.h"
+
 int main() {
     
     Screen<50, 50> main_screen(25, 25);
@@ -14,9 +16,8 @@ int main() {
 
     try {
         
-        // initialize object to draw
         Polygon tri("Triangle");
-        main_screen.draw_polygon(&tri);
+        main_screen.draw_triangle_face(tri.get_data());
 
     } catch (const std::out_of_range& err) {
         std::cerr << "Error: out_of_range - " << err.what() << std::endl;
