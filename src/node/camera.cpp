@@ -1,10 +1,9 @@
 #include "camera.h"
 
-void Camera::set_dimensions(Vec2f dimensions) {
-    cout_vecf<2, true>("Set camera dimensions to", dimensions, "");
+void Camera::set_dimensions(Vector2 dimensions) {
     this->dimensions = dimensions;
 }
-Vec2f Camera::get_dimensions() {
+Vector2 Camera::get_dimensions() {
     return this->dimensions;
 }
 

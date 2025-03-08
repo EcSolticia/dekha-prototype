@@ -52,7 +52,7 @@ template <size_t height, size_t width> class Screen {
             // this block is executed iff the relative coordinates calculated are valid
             return get_idx_from_relcartesian(rel_x, rel_y);
         }
-        Vec2f get_cartesian_from_idx(size_t idx) {
+        Vector2 get_relcartesian_from_idx(size_t idx) {
             if (idx >= height * width) {
                 std::string msg = "Index " + std::to_string(idx) + " out of range";
                 throw std::out_of_range(msg);
@@ -66,91 +66,83 @@ template <size_t height, size_t width> class Screen {
 
             size_t rel_x = idx % width;
             size_t rel_y = floor(idx/width);
-    
-            Vec2f res = {rel_x, rel_y};
-            return res;
+            
+            return Vector2(rel_x, rel_y);
         }
         
     public:
-        Vec2f map_vertex_to_screen(Vec3f vertex_position) {
+        Vector2 map_vertex_to_screen(Vector3 vertex_position) {
             // position on screen
-            Vec2f PoS;
+            Vector2 PoS;
         
-            if (vertex_position[2] == 0) {
-                cout_vecf<3, true>("\nVertex position", vertex_position, "");
-                std::string msg = "Error in mapping vertex to screen: division by zero";
-                throw std::domain_error(msg);
+            if (vertex_position.z == 0) {
+                throw std::domain_error("Error in mapping vertex to screen: division by zero");
             }
         
-            Vec2f cam_dim = (this->get_cam())->get_dimensions();
-            PoS[0] = (vertex_position[0] * width)/(vertex_position[2] * cam_dim[0]);
-            PoS[1] = (vertex_position[1] * height)/(vertex_position[2] * cam_dim[1]);
+            Vector2 cam_dim = (this->get_cam())->get_dimensions();
+            PoS.x = (vertex_position.x * width)/(vertex_position.z * cam_dim.x);
+            PoS.y = (vertex_position.y * height)/(vertex_position.z * cam_dim.y);
         
-            cout_vecf<3, false>("Mapped", vertex_position, " to");    
-            cout_vecf<2, true>("", PoS, "");
+            std::cout << "Mapped " << vertex_position << " to " << PoS << std::endl;
 
             return PoS;
         }
-        void draw_vertex(Vec3f vertex_position) {
-            Vec2f PoS = this->map_vertex_to_screen(vertex_position);
-        
-            int x = (int) PoS[0];
-            int y = (int) PoS[1];
-        
-            this->set_pixel(x, y, 1);
+        void draw_vertex(Vector3 vertex_position) {
+            Vector2 PoS = this->map_vertex_to_screen(vertex_position);
+            
+            this->set_pixel((int)(PoS.x), (int)(PoS.y));
         }
-        void draw_3dline(Vec3f from, Vec3f to) {
+        void draw_3dline(Vector3 from, Vector3 to) {
             if (from == to) {
                 return;
             }
-            Vec2f A = this->map_vertex_to_screen(from);
-            Vec2f B = this->map_vertex_to_screen(to);
+            Vector2 A = this->map_vertex_to_screen(from);
+            Vector2 B = this->map_vertex_to_screen(to);
 
             draw_line(A, B);
         }
 
-        void draw_triangle_face(std::vector<Vec3f> triangle_data) {
+        void draw_triangle_face(std::vector<Vector3> triangle_data) {
             if (triangle_data.size() != 3)  {
-                std::string msg = "Passed argument isn't a triangle";
-                throw std::domain_error(msg);
+                throw std::domain_error("Passed argument isn't a triangle");
             }
 
-            Vec3f a = triangle_data[0];
-            Vec3f b = triangle_data[1];
-            Vec3f c = triangle_data[2];
+            Vector3 a = triangle_data[0];
+            Vector3 b = triangle_data[1];
+            Vector3 c = triangle_data[2];
 
-            Vec2f A = this->map_vertex_to_screen(a);
-            Vec2f B = this->map_vertex_to_screen(b);
-            Vec2f C = this->map_vertex_to_screen(c);
+            Vector2 A = this->map_vertex_to_screen(a);
+            Vector2 B = this->map_vertex_to_screen(b);
+            Vector2 C = this->map_vertex_to_screen(c);
 
-            Vec2f P = subtract(B, A);
-            double lP = length(P);
-            Vec2f Q = subtract(C, A);
-            double lQ = length(Q);
+            Vector2 P = B - A;
+            double lP = P.length();
+            Vector2 Q = C - A;
+            double lQ = Q.length();
 
             // calculate bounding region
-            Vec2f top_left = {min(A[0], B[0], C[0]), max(A[1], B[1], C[1])};
-            Vec2f bottom_right = {max(A[0], B[0], C[9]), min(A[1], B[1], C[1])};
+            Vector2 top_left = {min(A.x, B.x, C.x), max(A.y, B.y, C.y)};
+            Vector2 bottom_right = {max(A.x, B.x, C.x), min(A.y, B.y, C.y)};
 
-            size_t i = bottom_right[1];
-            size_t l = top_left[1];
+            size_t i = bottom_right.y;
+            size_t l = top_left.y;
             while (i < l) {
                 
-                size_t p = top_left[0];
-                size_t q = bottom_right[0];
+                size_t p = top_left.x;
+                size_t q = bottom_right.x;
                 while (p < q) {
 
                     // check if (p, i) is in the triangle
-                    Vec2f X = {(double)(p - top_left[0]), (double)(i - bottom_right[1])};
-                    double l = length(X);
-                    double w_p = (X[0] * Q[1] - X[1] * Q[0])/(P[0] * Q[1] - P[1] * Q[0]);
-                    double w_q = (P[0] * X[1] - X[0] * P[1])/(P[0] * Q[1] - P[1] * Q[0]);
+                    Vector2 X = {(double)(p - top_left.x), (double)(i - bottom_right.y)};
+                    double l = X.length();
+                    double w_p = (X.x * Q.y - X.y * Q.x)/(P.x * Q.y - P.y * Q.x);
+                    double w_q = (P.x * X.y - X.x * P.y)/(P.x * Q.y - P.y * Q.x);
 
                     if (w_p + w_q <= 1 and w_p >= 0 and w_q >= 0) {
                         // fill pixel
                         set_pixel(p, i, 1);
                     } else {
-                        cout_vecf<2, true>("Pixel", X, " out of face");
+                        std::cout << "Pixel " << X << " out of face" << std::endl;
                     }
 
                     ++p;
@@ -161,12 +153,11 @@ template <size_t height, size_t width> class Screen {
         }
 
         void draw_polygon(Polygon* polygon_node) {
-            std::vector<Vec3f> data = polygon_node->get_data();
+            std::vector<Vector3> data = polygon_node->get_data();
 
             size_t l = data.size();
             if (l < 3) {
-                std::string msg = "Passed Polygon node doesn't contain sufficient number of data points!";
-                throw std::domain_error(msg);
+                throw std::domain_error("Passed Polygon node doesn't contain sufficient number of data points!");
             }
             
             // draw wireframe
@@ -176,12 +167,11 @@ template <size_t height, size_t width> class Screen {
             this->draw_3dline(data[l - 1], data[0]);
         }
         void draw_polygonX(Polygon* polygon_node) {
-            std::vector <Vec3f> data = polygon_node->get_data();
+            std::vector <Vector3> data = polygon_node->get_data();
 
             size_t l = data.size();
             if (l < 3) {
-                std::string msg = "Passed Polygon node doesn't contain sufficient number of data points!";
-                throw std::runtime_error(msg);
+                throw std::domain_error("Passed Polygon node doesn't contain sufficient number of data points!");
             }
 
             for (size_t i = 0; i < l; ++i) {
@@ -190,21 +180,20 @@ template <size_t height, size_t width> class Screen {
                 }
             }
         }
+        // incomplete
         void draw_polygon_with_faces(Polygon* polygon_node) {
-            std::vector <Vec3f> data = polygon_node->get_data();
+            std::vector <Vector3> data = polygon_node->get_data();
 
             size_t l = data.size();
             if (l < 3) {
-                std::string msg = "Passed Polygon node doesn't contain sufficient number of data points!";
-                throw std::runtime_error(msg);
+                throw std::domain_error("Passed Polygon node doesn't contain sufficient number of data points!");
             }
 
         }
 
         Camera* get_cam() const {
             if (this->cam == nullptr) {
-                std::string msg = "Screen camera not yet set";
-                throw std::runtime_error(msg);
+                throw std::runtime_error("Screen camera not yet set");
             }
             return this->cam;
         }
@@ -213,11 +202,8 @@ template <size_t height, size_t width> class Screen {
             this->cam = cam;
         }
 
-        Vec2f get_pixel_dimensions() {
-            Vec2f C;
-            C[0] = width;
-            C[1] = height;
-            return C;
+        Vector2 get_pixel_dimensions() {
+            return Vector2(width, height);
         }
 
         void set_pixel(int x, int y, int val) {
@@ -225,26 +211,18 @@ template <size_t height, size_t width> class Screen {
             std::cout << "Set pixel (" << x << ", " << y << ") to value " << val << std::endl;
         }
     
-        void draw_line(Vec2f A, Vec2f B) {
-            Vec2f diff = subtract(B, A);
-            cout_vecf<2, true>("Calculated diff as ", diff, "");
-            double l = length(diff);
-            std::cout << "Calculated length as " << l << "\n";
-            Vec2f unit_diff = divide(diff, l);
-            cout_vecf<2, true>("Calculated unit_diff as ", unit_diff, "");
+        void draw_line(Vector2 A, Vector2 B) {
+            Vector2 diff = B - A;
+            double l = diff.length();
+            Vector2 unit_diff = diff/l;
             size_t lui = (size_t) l;
-            std::cout << "Calculated lui as " << lui << "\n";
             for (size_t i = 0; i < lui; ++i) {
-                Vec2f Apda = add(A, multiply(unit_diff, i));
-                cout_vecf<2, true>("Calculated Apda", Apda, "");
-                
-                int x = (int) Apda[0];
-                int y = (int) Apda[1];
+                //Vec2f Apda = add(A, multiply(unit_diff, i));
+                Vector2 current = A + unit_diff * i;
 
-                set_pixel(x, y, 1);
+                set_pixel((int)(current.x), (int)(current.y), 1);
 
             }
-            std::cout << std::endl;
         }
 
         void output_display() {

@@ -11,8 +11,7 @@ int main() {
     Screen<50, 50> main_screen(25, 25);
     Camera cam;
     main_screen.set_cam(&cam);
-    Vec2f d = {50, 50};
-    cam.set_dimensions(d);
+    cam.set_dimensions(Vector2(50, 50));
 
     try {
         

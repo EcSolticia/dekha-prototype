@@ -7,25 +7,24 @@ std::string Node::get_name() const {
     return this->name;
 }
 
-void Node::set_position(const Vec3f position) {
+void Node::set_position(const Vector3 position) {
     this->position = position;
 }
-Vec3f Node::get_position() const {
+Vector3 Node::get_position() const {
     return this->position;
 }
 
-void Node::set_rotation(const Vec3f rotation) {
+void Node::set_rotation(const Vector3 rotation) {
     this->rotation = rotation;
 }
-Vec3f Node::get_rotation() const {
+Vector3 Node::get_rotation() const {
     return rotation;
 }
 
 Node::Node(const std::string name) {
     this->set_name(name);
-    Vec3f zero = {};
-    this->position = zero;
-    this->rotation = zero;
+    this->position = Vector3();
+    this->rotation = Vector3();
     std::cout << "Node of name " << this->get_name() << " constructed" << std::endl;
 }
 
