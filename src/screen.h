@@ -80,6 +80,6 @@ class Screen {
         // **
         // The Constructor and Destructor
         // **
-        Screen(const size_t height, const size_t width);
+        Screen(const size_t height, const size_t width, Vector2 dimensions);
         ~Screen();
 };

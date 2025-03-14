@@ -169,9 +169,10 @@ void Screen::draw_triangle_face(std::vector<Vector3> triangle_data) {
 // **
 // The Constructor and Destructor
 // **
-Screen::Screen(const size_t height, const size_t width) {
-    this->height = height;
-    this->width = width;
+Screen::Screen(const size_t height, const size_t width, Vector2 dimensions) {
+    this->set_height(height);
+    this->set_width(width);
+    this->set_dimensions(dimensions);
 
     this->initialize();
 
