@@ -14,10 +14,6 @@ private:
     Vector2 get_position_on_screen(Vector3 vertex_position);
 
 public:
-
-    void set_dimensions(Vector2 dimensions);
-    Vector2 get_dimensions();
-
     void set_focal_length(const double focal_length);
     double get_focal_length() const;
 

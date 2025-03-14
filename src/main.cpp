@@ -7,7 +7,9 @@
 #include "common/meshgen.h"
 
 int main() {
+    Screen main_screen(50, 50);
     
+    /*
     Screen<50, 50> main_screen(25, 25);
     Camera cam;
     main_screen.set_cam(&cam);
@@ -38,6 +40,6 @@ int main() {
     main_screen.output_display();
 
     std::cout << "Program executed successfully" << std::endl;
-
+    */
     return 0;
 }

@@ -1,12 +1,5 @@
 #include "camera.h"
 
-void Camera::set_dimensions(Vector2 dimensions) {
-    this->dimensions = dimensions;
-}
-Vector2 Camera::get_dimensions() {
-    return this->dimensions;
-}
-
 void Camera::set_focal_length(const double focal_length) {
     this->focal_length = focal_length;
 }
